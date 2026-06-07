@@ -1,0 +1,13 @@
+
+body{margin:0;background:#080b14;color:#f2f2f2;font-family:Segoe UI,sans-serif}
+.wrap{max-width:1300px;margin:auto;padding:20px}
+h1,h2{color:#c8a04a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:#121827;border:1px solid #8b1e1e;border-radius:14px;padding:20px;margin-bottom:20px}
+input,select{width:100%;padding:10px;margin:6px 0;background:#1b2233;color:white;border:1px solid #333;border-radius:8px}
+button{margin:5px;padding:10px 14px;border:none;border-radius:8px;background:#8b1e1e;color:white;cursor:pointer}
+table{width:100%;border-collapse:collapse}
+td,th{padding:10px;border-bottom:1px solid #333}
+.stat{padding:8px 0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+@media print{button{display:none}.card{border:1px solid #ccc;background:white;color:black}body{background:white;color:black}}
