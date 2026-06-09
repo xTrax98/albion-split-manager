@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Split Calculator V3</title>
+<title>Loot Split</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -69,28 +69,51 @@
         </div>
 
         <div class="card">
-            <h2>Dashboard</h2>
+			<h2>Dashboard</h2>
 
-            <div id="dashboard" class="dashboard"></div>
+			<div id="dashboard" class="dashboard"></div>
 
-            <div class="buttons">
-                <button onclick="copiarDiscord()">📋 Discord</button>
-                <button onclick="guardar()">💾 Guardar</button>
-                <button onclick="window.print()">📄 PDF</button>
-            </div>
-        </div>
+			<div class="buttons">
+				<button onclick="copiarDiscord()">📋 Discord</button>
+				<button onclick="guardar()">💾 Guardar</button>
+				<button onclick="window.print()">📄 PDF</button>
+				<button onclick="exportarHistorial()">📥 Exportar</button>
+
+					<input
+						type="file"
+						id="importFile"
+						accept=".json"
+						style="display:none"
+						onchange="importarHistorial(event)"
+					>
+
+					<button onclick="document.getElementById('importFile').click()">
+						📤 Importar
+					</button>
+			</div>
+
+			<h2 style="margin-top:20px;">Vista Discord</h2>
+
+			<textarea id="discordPreview" readonly></textarea>
+
+		</div>
 
     </div>
 
-    <div class="card">
-        <h2>Vista Discord</h2>
-        <textarea id="discordPreview" readonly></textarea>
-    </div>
 
-    <div class="card">
-        <h2>Historial</h2>
-        <div id="historial"></div>
-    </div>
+    <div class="grid">
+
+		<div class="card">
+			<h2>Historial</h2>
+			<div id="historial"></div>
+		</div>
+
+		<div class="card">
+			<h2>📊 Estadísticas</h2>
+			<div id="stats"></div>
+		</div>
+
+	</div>
 
 </div>
 

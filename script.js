@@ -1,4 +1,4 @@
-const ids=[
+const ids = [
 'loot',
 'bolsas',
 'reparacion',
@@ -17,6 +17,10 @@ function fmt(n){
 return Math.round(n).toString();
 }
 
+function fmtStats(n){
+    return Math.round(n).toLocaleString('es-ES');
+}
+
 function calc(){
 
 let loot = +$('loot').value || 0;
@@ -24,68 +28,64 @@ let bolsas = +$('bolsas').value || 0;
 let rep = +$('reparacion').value || 0;
 let mapa = +$('mapa').value || 0;
 
-let venta = (+$('venta').value || 0)/100;
-let caller = (+$('caller').value || 0)/100;
-let looter = (+$('looter').value || 0)/100;
+let venta = (+$('venta').value || 0) / 100;
+let caller = (+$('caller').value || 0) / 100;
+let looter = (+$('looter').value || 0) / 100;
 
 let jugadores = +$('jugadores').value || 0;
 
 let ventaTabla = loot * venta;
 
 let total =
-(bolsas - rep) +
-(ventaTabla - mapa);
+    (bolsas - rep) +
+    (ventaTabla - mapa);
 
 let participaciones =
-jugadores +
-(1 + caller) +
-(1 + looter);
+    jugadores +
+    (1 + caller) +
+    (1 + looter);
 
 let base =
-participaciones > 0
-? total / participaciones
-: 0;
+    participaciones > 0
+    ? total / participaciones
+    : 0;
 
 let pagoCaller = base * (1 + caller);
 let pagoLooter = base * (1 + looter);
 
-$('dashboard').innerHTML=`
+$('dashboard').innerHTML = `
+    <div class="stat">
+        <span>Total Repartir</span>
+        <strong>${fmt(total)}</strong>
+    </div>
 
-<div class="stat">
-<span>Total Repartir</span>
-<strong>${fmt(total)}</strong>
-</div>
+    <div class="stat">
+        <span>Participaciones</span>
+        <strong>${participaciones.toFixed(2)}</strong>
+    </div>
 
-<div class="stat">
-<span>Participaciones</span>
-<strong>${participaciones.toFixed(2)}</strong>
-</div>
+    <div class="stat">
+        <span>Pago Jugador</span>
+        <strong>${fmt(base)}</strong>
+    </div>
 
-<div class="stat">
-<span>Pago Jugador</span>
-<strong>${fmt(base)}</strong>
-</div>
+    <div class="stat">
+        <span>Pago Caller</span>
+        <strong>${fmt(pagoCaller)}</strong>
+    </div>
 
-<div class="stat">
-<span>Pago Caller</span>
-<strong>${fmt(pagoCaller)}</strong>
-</div>
+    <div class="stat">
+        <span>Pago Looter</span>
+        <strong>${fmt(pagoLooter)}</strong>
+    </div>
 
-<div class="stat">
-<span>Pago Looter</span>
-<strong>${fmt(pagoLooter)}</strong>
-</div>
-
-<div class="stat">
-<span>Venta Tabla</span>
-<strong>${fmt(ventaTabla)}</strong>
-</div>
-
+    <div class="stat">
+        <span>Venta Tabla</span>
+        <strong>${fmt(ventaTabla)}</strong>
+    </div>
 `;
 
-$('discordPreview').value =
-
-`🏆 SPLIT ${$('nombre').value}
+$('discordPreview').value = `🏆 SPLIT ${$('nombre').value}
 
 💎 Loot Tabla: ${fmt(loot)}
 📦 Bolsas: ${fmt(bolsas)}
@@ -102,39 +102,232 @@ $('discordPreview').value =
 `;
 
 guardarConfig();
+
 }
 
 function copiarDiscord(){
-
 navigator.clipboard.writeText(
 $('discordPreview').value
 );
 
 alert("Copiado");
+
 }
 
 function guardar(){
 
 let historial =
 JSON.parse(
-localStorage.getItem('albionv3')
-|| '[]'
+    localStorage.getItem('albionv3')
+    || '[]'
 );
 
 historial.unshift({
-fecha:$('fecha').value,
-nombre:$('nombre').value
+    fecha:$('fecha').value,
+    nombre:$('nombre').value,
+
+    loot:$('loot').value,
+    bolsas:$('bolsas').value,
+    reparacion:$('reparacion').value,
+    mapa:$('mapa').value,
+
+    venta:$('venta').value,
+    caller:$('caller').value,
+    looter:$('looter').value,
+    jugadores:$('jugadores').value
 });
 
+historial = historial.slice(0,50);
+
 localStorage.setItem(
-'albionv3',
-JSON.stringify(historial)
+    'albionv3',
+    JSON.stringify(historial)
 );
 
+cargarConfig();
 cargarHistorial();
+actualizarStats();
+calc();
+
+}
+
+function cargarSplit(index){
+
+let historial =
+JSON.parse(
+    localStorage.getItem('albionv3')
+    || '[]'
+);
+
+let split = historial[index];
+
+if(!split) return;
+
+$('fecha').value = split.fecha || '';
+$('nombre').value = split.nombre || '';
+
+$('loot').value = split.loot || '';
+$('bolsas').value = split.bolsas || '';
+$('reparacion').value = split.reparacion || '';
+$('mapa').value = split.mapa || '';
+
+$('venta').value = split.venta || '';
+$('caller').value = split.caller || '';
+$('looter').value = split.looter || '';
+$('jugadores').value = split.jugadores || '';
+
+calc();
+
+}
+
+function borrarSplit(index){
+
+let historial =
+JSON.parse(
+    localStorage.getItem('albionv3')
+    || '[]'
+);
+
+historial.splice(index,1);
+
+localStorage.setItem(
+    'albionv3',
+    JSON.stringify(historial)
+);
+
+cargarConfig();
+cargarHistorial();
+actualizarStats();
+calc();
+
 }
 
 function cargarHistorial(){
+
+let historial =
+JSON.parse(
+    localStorage.getItem('albionv3')
+    || '[]'
+);
+
+$('historial').innerHTML =
+historial.map((x,index)=>`
+
+<div class="save-item">
+
+    <span class="save-name">
+        📅 ${x.fecha} - ${x.nombre}
+    </span>
+
+    <div class="save-actions">
+
+	<button onclick="cargarSplit(${index})">📂</button>
+	<button onclick="borrarSplit(${index})">🗑️</button>
+
+	</div>
+
+</div>
+
+`).join('');
+
+}
+
+function guardarConfig(){
+
+let config = {};
+
+ids.forEach(id=>{
+    config[id] = $(id).value;
+});
+
+localStorage.setItem(
+    'albionConfigV3',
+    JSON.stringify(config)
+);
+
+}
+
+function cargarConfig(){
+
+let config =
+JSON.parse(
+    localStorage.getItem('albionConfigV3')
+    || '{}'
+);
+
+ids.forEach(id=>{
+
+    if($(id) && config[id] !== undefined){
+
+        $(id).value = config[id];
+
+    }
+
+});
+
+}
+
+function exportarHistorial(){
+
+    let historial =
+    JSON.parse(
+        localStorage.getItem('albionv3')
+        || '[]'
+    );
+
+    const blob = new Blob(
+        [JSON.stringify(historial, null, 2)],
+        { type: 'application/json' }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = 'albion-splits.json';
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importarHistorial(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        try{
+
+            const historial =
+            JSON.parse(e.target.result);
+
+            localStorage.setItem(
+                'albionv3',
+                JSON.stringify(historial)
+            );
+
+            cargarHistorial();
+
+            alert('Historial importado');
+
+        }catch{
+
+            alert('Archivo no válido');
+
+        }
+
+    };
+
+    reader.readAsText(file);
+}
+
+function actualizarStats(){
 
 let historial =
 JSON.parse(
@@ -142,57 +335,83 @@ localStorage.getItem('albionv3')
 || '[]'
 );
 
-$('historial').innerHTML =
-historial.map(x=>`
+if(historial.length === 0){
+
+$('stats').innerHTML = `
+No hay datos todavía.
+`;
+
+return;
+}
+
+let totalRepartido = 0;
+let mayorSplit = 0;
+
+historial.forEach(split=>{
+
+let loot = Number(split.loot) || 0;
+let bolsas = Number(split.bolsas) || 0;
+let rep = Number(split.reparacion) || 0;
+let mapa = Number(split.mapa) || 0;
+let venta = (Number(split.venta) || 0) / 100;
+
+let total =
+(bolsas - rep) +
+((loot * venta) - mapa);
+
+totalRepartido += total;
+
+if(total > mayorSplit){
+mayorSplit = total;
+}
+
+});
+
+let promedio =
+totalRepartido / historial.length;
+
+let ultimo =
+historial[0]?.nombre || '-';
+
+$('stats').innerHTML = `
+
 <div>
-📅 ${x.fecha}
-- ${x.nombre}
+<strong>Splits guardados:</strong>
+${historial.length}
 </div>
-`).join('');
-}
 
-function guardarConfig(){
+<div>
+<strong>Total repartido:</strong>
+${fmtStats(totalRepartido)}
+</div>
 
-let config={};
+<div>
+<strong>Mayor split:</strong>
+${fmtStats(mayorSplit)}
+</div>
 
-ids.forEach(id=>{
-config[id]=$(id).value;
-});
+<div>
+<strong>Promedio:</strong>
+${fmtStats(promedio)}
+</div>
 
-localStorage.setItem(
-'albionConfigV3',
-JSON.stringify(config)
-);
-}
+<div>
+<strong>Último split:</strong>
+${ultimo}
+</div>
 
-function cargarConfig(){
-
-let config =
-JSON.parse(
-localStorage.getItem('albionConfigV3')
-|| '{}'
-);
-
-ids.forEach(id=>{
-
-if($(id) && config[id]!==undefined){
-
-$(id).value=config[id];
-
-}
-
-});
-
+`;
 }
 
 ids.forEach(id=>{
 
 if($(id)){
-$(id).addEventListener('input',calc);
+    $(id).addEventListener('input', calc);
 }
 
 });
 
 cargarConfig();
 cargarHistorial();
+actualizarStats();
 calc();
