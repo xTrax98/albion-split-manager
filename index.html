@@ -1,1 +1,100 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Albion Split Manager</title><link rel="stylesheet" href="style.css"></head><body><div class="container"><h1>🏰 Albion Split Manager</h1><div class="grid"><div class="card"><h2>Configuración</h2><input id="fecha" type="date"><input id="nombre" placeholder="Nombre del Split"><input id="loot" type="number" placeholder="Loot Tabla"><input id="bolsas" type="number" placeholder="Bolsas"><input id="reparacion" type="number" placeholder="Reparación"><input id="mapa" type="number" placeholder="Coste Mapa"><input id="venta" type="number" value="90"><input id="caller" type="number" value="5"><input id="looter" type="number" value="15"><input id="jugadores" type="number" value="9"></div><div class="card"><h2>Dashboard</h2><div id="dashboard"></div></div></div><script src="script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split Calculator V3</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+
+    <div class="grid">
+
+				<div class="card">
+					<h2>Datos</h2>
+
+					<div class="form-row">
+			<label>Fecha</label>
+			<input id="fecha" type="date">
+		</div>
+
+		<div class="form-row">
+			<label>Nombre del Split</label>
+			<input id="nombre" type="text">
+		</div>
+
+		<div class="form-row">
+			<label>Loot Tabla</label>
+			<input id="loot" type="number">
+		</div>
+
+		<div class="form-row">
+			<label>Bolsas</label>
+			<input id="bolsas" type="number">
+		</div>
+
+		<div class="form-row">
+			<label>Reparación</label>
+			<input id="reparacion" type="number">
+		</div>
+
+		<div class="form-row">
+			<label>Coste Mapa</label>
+			<input id="mapa" type="number">
+		</div>
+
+		<div class="form-row">
+			<label>% Venta</label>
+			<input id="venta" type="number" value="90">
+		</div>
+
+		<div class="form-row">
+			<label>Bonus Caller (%)</label>
+			<input id="caller" type="number" value="5">
+		</div>
+
+		<div class="form-row">
+			<label>Bonus Looter (%)</label>
+			<input id="looter" type="number" value="15">
+		</div>
+
+		<div class="form-row">
+			<label>Jugadores Normales</label>
+			<input id="jugadores" type="number" value="9">
+		</div>
+
+        </div>
+
+        <div class="card">
+            <h2>Dashboard</h2>
+
+            <div id="dashboard" class="dashboard"></div>
+
+            <div class="buttons">
+                <button onclick="copiarDiscord()">📋 Discord</button>
+                <button onclick="guardar()">💾 Guardar</button>
+                <button onclick="window.print()">📄 PDF</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h2>Vista Discord</h2>
+        <textarea id="discordPreview" readonly></textarea>
+    </div>
+
+    <div class="card">
+        <h2>Historial</h2>
+        <div id="historial"></div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
