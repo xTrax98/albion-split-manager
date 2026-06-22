@@ -34,71 +34,100 @@ let looter = (+$('looter').value || 0) / 100;
 
 let jugadores = +$('jugadores').value || 0;
 
+// TAB vendida
 let ventaTabla = loot * venta;
 
+// Bolsas netas
+let bolsasNetas =
+    bolsas - rep - mapa;
+
+// Total generado
 let total =
-    (bolsas - rep) +
-    (ventaTabla - mapa);
+    ventaTabla + bolsasNetas;
 
-let participaciones =
-    jugadores +
-    (1 + caller) +
-    (1 + looter);
+// Looter (% del TOTAL)
+let profitLooter =
+    total * looter;
 
+// Caller (% de la TAB vendida)
+let profitCaller =
+    ventaTabla * caller;
+
+// Total a repartir
+let totalSplit =
+    total -
+    profitLooter -
+    profitCaller;
+
+// Unidad base
 let base =
-    participaciones > 0
-    ? total / participaciones
+    jugadores > 0
+    ? totalSplit / jugadores
     : 0;
 
-let pagoCaller = base * (1 + caller);
-let pagoLooter = base * (1 + looter);
+// Pagos finales
+let pagoJugador = base;
+let pagoCaller = base + profitCaller;
+let pagoLooter = profitLooter;
 
 $('dashboard').innerHTML = `
     <div class="stat">
-        <span>Total Repartir</span>
+        <span>Venta TAB</span>
+        <strong>${fmt(ventaTabla)}</strong>
+    </div>
+
+    <div class="stat">
+        <span>Bolsas Netas</span>
+        <strong>${fmt(bolsasNetas)}</strong>
+    </div>
+
+    <div class="stat">
+        <span>Total</span>
         <strong>${fmt(total)}</strong>
     </div>
 
     <div class="stat">
-        <span>Participaciones</span>
-        <strong>${participaciones.toFixed(2)}</strong>
+        <span>Total a Repartir</span>
+        <strong>${fmt(totalSplit)}</strong>
     </div>
 
     <div class="stat">
-        <span>Pago Jugador</span>
+        <span>Unidad Base</span>
         <strong>${fmt(base)}</strong>
     </div>
 
     <div class="stat">
-        <span>Pago Caller</span>
+        <span>Profit Caller</span>
+        <strong>${fmt(profitCaller)}</strong>
+    </div>
+
+    <div class="stat">
+        <span>Profit Looter</span>
+        <strong>${fmt(profitLooter)}</strong>
+    </div>
+
+    <div class="stat">
+        <span>Caller Total</span>
         <strong>${fmt(pagoCaller)}</strong>
-    </div>
-
-    <div class="stat">
-        <span>Pago Looter</span>
-        <strong>${fmt(pagoLooter)}</strong>
-    </div>
-
-    <div class="stat">
-        <span>Venta Tabla</span>
-        <strong>${fmt(ventaTabla)}</strong>
     </div>
 `;
 
 $('discordPreview').value = `🏆 SPLIT ${$('nombre').value}
 
-💎 Loot Tabla: ${fmt(loot)}
+💎 Loot: ${fmt(loot)}
 📦 Bolsas: ${fmt(bolsas)}
 🔧 Reparación: ${fmt(rep)}
 🗺️ Mapa: ${fmt(mapa)}
 
+💰 Venta TAB: ${fmt(ventaTabla)}
+💰 Bolsas Netas: ${fmt(bolsasNetas)}
 💰 Total: ${fmt(total)}
 
-👤 Jugador: ${fmt(base)}
 📢 Caller: ${fmt(pagoCaller)}
 📦 Looter: ${fmt(pagoLooter)}
+👤 Jugador: ${fmt(pagoJugador)}
 
-👥 Participaciones: ${participaciones.toFixed(2)}
+👥 Jugadores: ${jugadores}
 `;
 
 guardarConfig();
