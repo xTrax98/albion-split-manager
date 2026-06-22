@@ -51,7 +51,7 @@ let profitLooter =
 
 // Caller (% de la TAB vendida)
 let profitCaller =
-    ventaTabla * caller;
+    total * caller;
 
 // Total a repartir
 let totalSplit =
