@@ -92,7 +92,7 @@ $('dashboard').innerHTML = `
     </div>
 
     <div class="stat">
-        <span>Unidad Base</span>
+        <span>Jugadores</span>
         <strong>${fmt(base)}</strong>
     </div>
 
